@@ -4,16 +4,12 @@ const express = require("express");
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 
+const User = require("./model/user");
 const app = express();
 
 app.use(express.json());
 
-// importing user context
-const User = require("./model/user");
-
-// Register
 app.post("/register", async (req, res) => {
-  // Our register logic starts here
   try {
     // Get user input
     const { role, email, password } = req.body;
