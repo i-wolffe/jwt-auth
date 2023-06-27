@@ -9,6 +9,11 @@ const app = express();
 
 app.use(express.json());
 
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  next();
+});
+
 app.post("/register", async (req, res) => {
   try {
     // Get user input
@@ -55,7 +60,9 @@ app.post("/register", async (req, res) => {
 
 // Login
 app.post("/login", async (req, res) => {
+  res.set('Access-Control-Allow-Origin', 'http://localhost:3000');
    // Our login logic starts here
+   console.error(req.body)
    try {
     // Get user input
     const { email, password } = req.body;
@@ -83,7 +90,7 @@ app.post("/login", async (req, res) => {
       // user
       res.status(200).json(user);
     }
-    res.status(400).send("Invalid Credentials");
+    res.status(400).send("Invalid Credentials" + req);
   } catch (err) {
     console.log(err);
   }
