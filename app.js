@@ -15,7 +15,7 @@ app.use((req, res, next) => {
 });
 
 app.options('/register', cors())
-app.post("/register", async (req, res) => {
+app.post("/register",cors(), async (req, res) => {
   try {
     // Get user input
     const { role, email, password } = req.body;
@@ -60,8 +60,8 @@ app.post("/register", async (req, res) => {
 });
 
 // Login
-app.options('/register', cors())
-app.post("/login", async (req, res) => {
+app.options('/login', cors())
+app.post("/login", cors(), async (req, res) => {
   res.set('Access-Control-Allow-Origin', 'http://localhost:3000');
    // Our login logic starts here
    console.error(req.body)
