@@ -3,7 +3,7 @@ require("./config/database").connect();
 const express = require("express");
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
-
+const cors = require('cors')
 const User = require("./model/user");
 const app = express();
 
@@ -14,6 +14,7 @@ app.use((req, res, next) => {
   next();
 });
 
+app.options('/register', cors())
 app.post("/register", async (req, res) => {
   try {
     // Get user input
@@ -59,6 +60,7 @@ app.post("/register", async (req, res) => {
 });
 
 // Login
+app.options('/register', cors())
 app.post("/login", async (req, res) => {
   res.set('Access-Control-Allow-Origin', 'http://localhost:3000');
    // Our login logic starts here
