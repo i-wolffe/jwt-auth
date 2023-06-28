@@ -62,22 +62,25 @@ app.post("/register",cors(), async (req, res) => {
 // Login
 app.options('/login', cors())
 app.post("/login", cors(), async (req, res) => {
-  res.set('Access-Control-Allow-Origin', 'http://localhost:3000');
    // Our login logic starts here
-   console.error(req.body)
+  //  console.log("BODY",req.body)
+  //  console.log("PARAMS",req.params)
+  //  console.log("QUERY",req.query)
+   // console.log("REK",req)
    try {
     // Get user input
-    const { email, password } = req.body;
+    const { role ,email, password } = req.body;
     // Validate user input
     if (!(email && password)) {
-      console.log(email,password)
       res.status(400).send(`All inputs are required -> email: ${email}; pass: ${password}`);
+      return {error: `Invalid User`, stauts: 400}
     }
     // Validate if user exist in our database
     const user = await User.findOne({ email });
-
-    if (user && (await bcrypt.compare(password, user.password))) {
+    // console.log('USER:',user, 'ROLES:', role, user.role)
+    if (user && role === user.role && (await bcrypt.compare(password, user.password))) {
       // Create token
+      console.log('Creating Token...')
       const token = jwt.sign(
         { user_id: user._id, email },
         process.env.TOKEN_KEY,
@@ -85,16 +88,26 @@ app.post("/login", cors(), async (req, res) => {
           expiresIn: "8h",
         }
       );
-
       // save user token
       user.token = token;
-
+      user.status = 200
+      // console.log('NewUser:',user)
       // user
-      res.status(200).json(user);
+      console.log('TOKEN generated successfully')
+      // console.log('TOKEN generated ->',token)
+      res.status(200).json(user)
+      // return user
+    } else {
+      console.log(401,'Validation error',{})
+      res.status(401).send("Invalid Credentials");
+      // return {error: "Invalid Credentials", stauts: 401}
+      
     }
-    res.status(400).send("Invalid Credentials" + req);
   } catch (err) {
     console.log(err);
+    console.log(403,'Invalid Credentials',{})
+    res.status(403).send("Invalid Credentials");
+    // return  {error: "Invalid Credentials", stauts: 403}
   }
   // Our register logic ends here
 });
